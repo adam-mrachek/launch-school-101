@@ -8,6 +8,7 @@ INITIAL_MARKER = ' '.freeze
 PLAYER_MARKER = 'X'.freeze
 COMPUTER_MARKER = 'O'.freeze
 PLAYER_ORDER = 'choose'.freeze
+WINNING_SCORE = 5
 
 def prompt(msg)
   puts ">>> #{msg}"
@@ -139,6 +140,24 @@ def place_piece!(brd, current_player)
   end
 end
 
+def display_round_result(brd)
+  if someone_won?(brd)
+    prompt "#{detect_winner(brd)} won the round!"
+  else
+    prompt "It's a tie!"
+  end
+end
+
+def update_scores(brd, score)
+  if detect_winner(brd) == 'Player'
+    score[:player] += 1
+  elsif detect_winner(brd) == 'Computer'
+    score[:computer] += 1
+  else
+    score[:ties] += 1
+  end
+end
+
 def display_score(score)
   prompt "Current Score:"\
       " You: #{score[:player]}."\
@@ -182,27 +201,15 @@ loop do
     end
 
     display_board(board)
-
-    if someone_won?(board)
-      prompt "#{detect_winner(board)} won the round!"
-    else
-      prompt "It's a tie!"
-    end
-
-    if detect_winner(board) == 'Player'
-      score[:player] += 1
-    elsif detect_winner(board) == 'Computer'
-      score[:computer] += 1
-    else
-      score[:ties] += 1
-    end
+    display_round_result(board)
+    update_scores(board, score)
 
     puts "..."
 
-    if score[:player] == 5
+    if score[:player] == WINNING_SCORE
       puts "***** YOU WON THE GAME! *****"
       break
-    elsif score[:computer] == 5
+    elsif score[:computer] == WINNING_SCORE
       puts "***** Sorry, the computer won the game. *****"
       break
     end
