@@ -153,23 +153,41 @@ def update_scores(brd, score)
     score[:player] += 1
   elsif detect_winner(brd) == 'Computer'
     score[:computer] += 1
-  else
-    score[:ties] += 1
   end
 end
 
 def display_score(score)
   prompt "Current Score:"\
       " You: #{score[:player]}."\
-      " Computer: #{score[:computer]}."\
-      " Ties: #{score[:ties]}."
+      " Computer: #{score[:computer]}."
+end
+
+def display_winning_player(score)
+  if score[:player] == WINNING_SCORE
+    puts "***** YOU WON THE GAME! *****"
+  elsif score[:computer] == WINNING_SCORE
+    puts "***** Sorry, the computer won the game. *****"
+  end
+end
+
+def play_again?
+  prompt "Would you like to play again? (y/n)"
+  loop do
+    answer = gets.chomp.downcase
+    if answer.start_with?('y')
+      break true
+    elsif answer.start_with?('n')
+      break false
+    else
+      prompt "Please enter 'y' or 'n'."
+    end
+  end
 end
 
 loop do
   score = {
     player: 0,
-    computer: 0,
-    ties: 0
+    computer: 0
   }
 
   system 'clear'
@@ -206,22 +224,18 @@ loop do
 
     puts "..."
 
-    if score[:player] == WINNING_SCORE
-      puts "***** YOU WON THE GAME! *****"
-      break
-    elsif score[:computer] == WINNING_SCORE
-      puts "***** Sorry, the computer won the game. *****"
-      break
-    end
+    display_winning_player(score)
+    break if score.value?(WINNING_SCORE)
 
     display_score(score)
     prompt "Press 'Enter' to begin next round."
     gets
   end
 
-  prompt "Play again? (y/n)"
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  break unless play_again?
+  # prompt "Play again? (y/n)"
+  # answer = gets.chomp.downcase
+  # break unless answer.start_with?('y')
 end
 
 prompt "Thanks for playing TicTacToe!  Good Bye."
