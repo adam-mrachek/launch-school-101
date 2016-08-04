@@ -233,9 +233,6 @@ loop do
   end
 
   break unless play_again?
-  # prompt "Play again? (y/n)"
-  # answer = gets.chomp.downcase
-  # break unless answer.start_with?('y')
 end
 
 prompt "Thanks for playing TicTacToe!  Good Bye."
