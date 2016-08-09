@@ -130,7 +130,7 @@ loop do
         display_cards(player_hand, dealer_hand)
       end
 
-      break if answer == 's' # || busted?(player_hand)
+      break if answer == 's'
     end
 
     if busted?(player_hand)
