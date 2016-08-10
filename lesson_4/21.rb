@@ -1,6 +1,10 @@
 SUITS = ['H', 'D', 'S', 'C'].freeze
 VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'].freeze
 
+def clear_screen
+  system('cls') || system('clear')
+end
+
 def initialize_deck
   SUITS.product(VALUES).shuffle
 end
@@ -38,19 +42,6 @@ def deal_hand(deck, player, dealer)
   2.times do
     player << deck.pop
     dealer << deck.pop
-  end
-end
-
-def dealer_turn(total)
-  loop do
-    if total > 21
-      puts "Dealer busted! You win!"
-      break
-    elsif total >= 17
-      break
-    elsif total < 17
-      deal card
-    end
   end
 end
 
@@ -100,7 +91,7 @@ loop do
   player_hand = []
   dealer_hand = []
 
-  system 'clear'
+  clear_screen
 
   puts ""
   puts "--> Let's play 21! <--".center(50)
@@ -121,7 +112,7 @@ loop do
         prompt "Please enter 'h' or 's'."
       end
 
-      system 'clear'
+      clear_screen
 
       if answer == 'h'
         prompt "You chose to hit and were dealt a #{game_deck.last}"
