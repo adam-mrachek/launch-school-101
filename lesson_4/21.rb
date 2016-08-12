@@ -1,5 +1,5 @@
 SUITS = ['H', 'D', 'S', 'C'].freeze
-VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'].freeze
+VALUES = %w(2 3 4 5 6 7 8 9 10 J Q K A).freeze
 MAX_POINTS = 21
 DEALER_STAY_POINTS = 17
 WINNING_SCORE = 5
@@ -56,22 +56,22 @@ end
 def determine_result(player, dealer)
   player_total = total(player)
   dealer_total = total(dealer)
-  result = if player_total > MAX_POINTS
-             "Player busted. Dealer wins the hand!"
-           elsif dealer_total > MAX_POINTS
-             "Dealer busted. Player wins the hand!"
-           elsif player_total > dealer_total
-             "Player wins!"
-           elsif dealer_total > player_total
-             "Dealer wins!"
-           else
-             "It's a push!"
-           end
-  result
+
+  if player_total > MAX_POINTS
+    "Player busted. Dealer wins the hand!"
+  elsif dealer_total > MAX_POINTS
+    "Dealer busted. Player wins the hand!"
+  elsif player_total > dealer_total
+    "Player wins!"
+  elsif dealer_total > player_total
+    "Dealer wins!"
+  else
+    "It's a push!"
+  end
 end
 
 def display_result(player, dealer)
-  prompt determine_result(player, dealer).to_s
+  prompt determine_result(player, dealer)
   prompt "You had #{player} for a total of #{total(player)}"
   prompt "Dealer had #{dealer} for a total of #{total(dealer)}"
 end
@@ -79,19 +79,15 @@ end
 def determine_winner(player, dealer)
   result = determine_result(player, dealer)
   if result.include?('Player wins')
-    "player"
+    :player
   elsif result.include?('Dealer wins')
-    "dealer"
+    :dealer
   end
 end
 
 def update_score(player, dealer, score)
   winner = determine_winner(player, dealer)
-  if winner == "player"
-    score[:player] += 1
-  elsif winner == "dealer"
-    score[:dealer] += 1
-  end
+  score[winner] += 1 if winner
 end
 
 def display_score(score)
@@ -112,13 +108,8 @@ def play_again?
   prompt "Play another game?"
   loop do
     answer = gets.chomp.downcase
-    if answer.start_with?('y')
-      break true
-    elsif answer.start_with?('n')
-      break false
-    else
-      prompt "Please enter a 'y' or 'n'."
-    end
+    break(answer == 'y') if answer.start_with?('y', 'n')
+    prompt "Please enter a 'y' or 'n'."
   end
 end
 
@@ -150,7 +141,7 @@ loop do
         loop do
           prompt "(H)it or (S)tay"
           answer = gets.chomp.downcase
-          break if answer == 'h' || answer == 's'
+          break if %w(h s).include? answer
           prompt "Please enter 'h' or 's'."
         end
 
